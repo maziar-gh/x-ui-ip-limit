@@ -1,10 +1,9 @@
 # x-ui
 
-پانل xray از چند پروتکل چند کاربره پشتیبانی می کند
+پنل xray با پشتیبانی از چند پروتکل چند کاربره و محدودیت آی پی
 
 
 # امکانات
-
 
 - نظارت بر وضعیت سیستم
 - پشتیبانی از پروتکل چند کاربره، عملیات تجسم صفحه وب
@@ -15,99 +14,52 @@
 - پشتیبانی از پنل دسترسی https (نام دامنه خود ارائه شده + گواهی ssl)
 - پشتیبانی از برنامه گواهینامه SSL با یک کلیک و تمدید خودکار
 - برای موارد پیکربندی پیشرفته تر، لطفاً به پانل مراجعه کنید
+- پشتیبانی از زبان انگلیسی*
+- امکان محدود کردن آی پی های کاربر*
 
-# نصب و ارتقا دهید
+
+# آپدیت
+```
+apt-get update -y && apt-get upgrade -y
+```
+# نصب curl
+
+```
+apt install curl -y
+```
+# نصب پنل
+
+```
+bash <(curl -Ls https://raw.githubusercontent.com/maziar-gh/x-ui-ip-limit/master/install.sh)
+```
+
+# و یا
+```
+wget https://raw.githubusercontent.com/maziar-gh/x-ui-ip-limit/master/install.sh
+sudo bash install.sh
+```
+
+## قدم بعدی
+
+> در تنضیمات پنل در بخش xray کد زیر را به اول فایل اضاقه کنید
+```
+"log": {
+   "loglevel": "warning", 
+   "access": "./access.log"
+ },
+```
+
+## سپس در ساخت vmess جدید میتونید تنظیمات مربوط به تعداد آی پی و ایمیل را برای کاربر وارد کنید
+
+
+
+##  و در آخر
+
 
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
-```
-
-## نصب و ارتقاء دستی
-
-
-1. ابتدا آخرین بسته از https://github.com/vaxilu/x-ui/releases دانلود کنید، به طور کلی Architecture را انتخاب کنید.amd64
-2. سپس بسته فشرده شده را در /root/دایرکتوری و rootبا کاربر وارد سرور شوید
-
-> اگر معماری cpu سرور شما نیست amd64، دستور را با معماری دیگری amd64جایگزین
-
-
-
-```
-cd /root/
-rm x-ui/ /usr/local/x-ui/ /usr/bin/x-ui -rf
-tar zxvf x-ui-linux-amd64.tar.gz
-chmod +x x-ui/x-ui x-ui/bin/xray-linux-* x-ui/x-ui.sh
-cp x-ui/x-ui.sh /usr/bin/x-ui
-cp -f x-ui/x-ui.service /etc/systemd/system/
-mv x-ui/ /usr/local/
-systemctl daemon-reload
-systemctl enable x-ui
 systemctl restart x-ui
 ```
-
-## با استفاده از docker نصب کنید
-
-
-> این آموزش داکر و تصویر داکر توسط Chasing66 ارائه شده است
-
-
-
-1. داکر را نصب کنید
-
-
-```shell
-curl -fsSL https://get.docker.com | sh
-```
-
-2. x-ui را نصب کنید
-
-
-```shell
-mkdir x-ui && cd x-ui
-docker run -itd --network=host \
-    -v $PWD/db/:/etc/x-ui/ \
-    -v $PWD/cert/:/root/cert/ \
-    --name x-ui --restart=unless-stopped \
-    enwaiax/x-ui:latest
-```
-
-> تصویر خود را بسازید
-
-
-
-```shell
-docker build -t x-ui .
-```
-
-## برنامه گواهی SSL
-
-
->این ویژگی و آموزش توسط FranzKafkaYu ارائه شده است
-
-
-
-این اسکریپت دارای یک تابع برنامه کاربردی گواهی SSL داخلی است. برای استفاده از این اسکریپت برای درخواست گواهی، باید شرایط زیر وجود داشته باشد:
-
-
-- ایمیل ثبت شده در Cloudflare را بشناسید
-- کلید Cloudflare Global API را بشناسید
-- نام دامنه از طریق cloudflare به سرور فعلی حل شده است
-
-نحوه دریافت کلید API جهانی Cloudflare:
-    ![](media/bda84fbc2ede834deaba1c173a932223.png)
-    ![](media/d13ffd6a73f938d1037d0708e31433bf.png)
-
-در هنگام استفاده، فقط وارد کنید 域名، 邮箱و API KEYنمودار شماتیک به صورت زیر است:
-        ![](media/2022-04-04_141259.png)
-
-موارد احتیاط:
-
-
-- اسکریپت از DNS API برای درخواست گواهی استفاده می کند
-- به طور پیش فرض، Let'sEncrypt به عنوان طرف CA استفاده می شود
-- دایرکتوری نصب گواهی دایرکتوری /root/cert است
-- گواهینامه های درخواست شده توسط این اسکریپت همه گواهینامه های نام دامنه عمومی هستند
 
 ## استفاده از ربات Tg (در حال توسعه، به طور موقت در دسترس نیست)
 
@@ -148,18 +100,6 @@ X-UI از اعلان ترافیک روزانه، یادآوری ورود به پ
 - CentOS 7+
 - Ubuntu 16+
 - Debian 8+
-
-# مشکل رایج
-
-
-## مشکل رایج
-
-
-ابتدا آخرین نسخه x-ui را روی سروری که v2-ui نصب شده است نصب کنید و سپس از دستور زیر برای مهاجرت استفاده کنید که v2-ui اصلی  inbound را به x-ui منتقل می کند.
-
-
-
-> لطفا  v2-uiو  x-ui، در غیر این صورت ورودی v2-ui با ورودی x-ui ایجاد می شود.
 
 
 ```
